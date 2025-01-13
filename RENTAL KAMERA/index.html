@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Kamera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #000, #eb0606, #FFDD00, #fff); /* Gradient background */
+            background-size: 400% 400%;
+            animation: gradientWave 15s ease infinite;
+        }
+        @keyframes gradientWave {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0; 
+            z-index: 1000;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1.5rem;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #FF8225;
+        }
+        .page {
+            display: none;
+            padding-top: 80px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .active {
+            display: block;
+        }
+        .hero-section {
+            height: 600px;
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('Gambar/bg_home.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .btn {
+            background-color: #B43F3F;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #FF8225;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); /* Increased min-width */
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 350px; /* Increased height */
+            object-fit: cover; 
+            transition: transform 0.3s; 
+        }
+        .gallery-item:hover img { 
+          transform: scale(1.1); 
+        }
+        .products-grid { 
+          display:grid; 
+          grid-template-columns :repeat(auto-fit,minmax(350px,1fr)); 
+          gap :2rem; 
+          padding :2rem 0; 
+         } 
+         .card { 
+           background-color:white; 
+           border-radius :12px; 
+           overflow:hidden; 
+           box-shadow :0 4px 6px rgba(0,0,0,0.1); 
+           transition :transform 0.3s; 
+         } 
+         .card:hover { 
+           transform :translateY(-5px); 
+         } 
+         .card img { 
+           width :100%; 
+           height :250px; 
+           object-fit :cover; 
+         } 
+         .card-body { 
+           padding :1.5rem; 
+         } 
+         .card-body h3 { 
+           color: #eb0606; /* Red color */
+           font-weight: bold;
+         }
+         .specs-list { 
+           list-style:none; 
+           padding :0; 
+           margin :1rem 0; 
+         } 
+         .specs-list li { 
+           margin :0.5rem 0; color:#666; 
+         } 
+         .about-section { 
+           background-color: rgba(255, 255, 255, 0.9); padding :3rem; margin-bottom :2rem; border-radius :12px; box-shadow :0 4px 6px rgba(0,0,0,0.1); text-align: center; 
+         } 
+         .about-section h2 { 
+           margin-bottom: 1rem; 
+           color: #B43F3F; 
+         } 
+         .about-section p { 
+           margin-bottom: 1rem; 
+           color: #666; 
+           line-height: 1.6; 
+         } 
+         .about-section h3 { 
+           margin-top: 2rem; 
+           margin-bottom: 1rem; 
+           color: #333; 
+         } 
+         #contact { 
+           background-color: rgba(255, 255, 255, 0.9); padding :2rem; border-radius :8px; box-shadow :0 4px 6px rgba(0,0,0,0.1); text-align:center; margin-bottom :2rem;  
+         } 
+         #contact h2 { text-align:center;margin-bottom :1rem;color: #B43F3F;} 
+         #contact form { display:flex;flex-direction :column;align-items: center;} 
+         #contact form input,#contact form textarea { margin-bottom :1rem;padding :0.5rem;border :1px solid #ccc;border-radius :4px;width: 100%;max-width: 500px;} 
+         #contact form button { padding :0.7rem;background-color:#B43F3F;color:white;border:none;border-radius :4px;cursor:pointer;width: 100%;max-width: 500px;} 
+         #contact form button:hover { background-color:#FF8225;} 
+         .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: rgba(202, 202, 202, 0.9);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .summary {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .order-card {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.3s;
+        }
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+        .order-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: #000; /* Black color */
+            font-weight: bold;
+        }
+        .order-card p {
+            margin: 0.25rem 0;
+            color: #333;
+        }
+        .order-card .order-status {
+            align-self: flex-end;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            color: white;
+            background-color: #FF8225;
+            font-weight: bold;
+        }
+        .order-card .order-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .order-card .order-details p {
+            flex: 1 1 45%;
+        }
+        .order-card .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .order-card .order-actions button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .order-card .order-actions button:hover {
+            opacity: 0.8;
+        }
+        .order-card .order-actions .btn-confirm {
+            background-color: #4CAF50; /* Green */
+            color: white;
+        }
+        .order-card .order-actions .btn-complete {
+            background-color: #2196F3; /* Blue */
+            color: white;
+        }
+        .order-card .order-actions .btn-cancel {
+            background-color: #f44336; /* Red */
+            color: white;
+        }
+        footer {
+            background-color: transparent;
+            color: rgb(0, 0, 0);
+            text-align: center;
+            padding: 1rem 0;
+            width: 100%;
+        }
+        .auth-links {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .auth-links a {
+            color: #B43F3F; /* Updated color */
+            text-decoration: none;
+            margin: 0 0.5rem;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .auth-links a:hover {
+            color: #FF8225; /* Updated hover color */
+        }
+        .container h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #000; /* Black color */
+            font-weight: bold; /* Bold font */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="auth-links">
+                <a href="login.html" id="logoutLink">Logout</a>
+                <a href="sign_up.html" id="signupLink">Sign Up</a>
+            </div>
+            <a href="#" onclick="showPage('home')">Home</a>
+            <a href="#" onclick="showPage('products')">Kamera</a>
+            <a href="#" onclick="showPage('contact')">Tentang & Kontak</a>
+            <a href="#" onclick="showPage('orders')">Pesanan Saya</a>
+        </nav>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+      <div class="hero-section">
+          <div class="hero-content">
+              <h1>Rental Kamera</h1>
+              <p>Abadikan momen spesial Anda dengan peralatan terbaik</p>
+              <a href="#" class="btn" onclick="showPage('products')">Lihat Katalog</a>
+          </div>
+      </div>
+
+      <div class="container">
+          <h2>Galeri Hasil Foto</h2>
+          <div class="gallery">
+              <div class="gallery-item"><img src="Gambar/cat.jpg" alt="Gallery 1"></div>
+              <div class="gallery-item"><img src="Gambar/labuan_bajo.jpg" alt="Gallery 2"></div>
+              <div class="gallery-item"><img src="Gambar/pohon.jpg" alt="Gallery 3"></div>
+              <div class="gallery-item"><img src="Gambar/tanah_lot.jpg" alt="Gallery 4"></div>
+              <div class="gallery-item"><img src="Gambar/Bromo.jpg" alt="Gallery 5"></div>
+              <div class="gallery-item"><img src="Gambar/pantai.jpg" alt="Gallery 6"></div>
+              <div class="gallery-item"><img src="Gambar/candi.jpg" alt="Gallery 7"></div>
+              <div class="gallery-item"><img src="Gambar/gumuk_pasir.jpg" alt="Gallery 8"></div>
+              <div class="gallery-item"><img src="Gambar/perkotaan.jpg" alt="Gallery 9"></div>
+              <div class="gallery-item"><img src="Gambar/Sampah_laut.jpg" alt="Gallery 10"></div>
+          </div>
+      </div>
+      <footer>
+          <p>&copy; 2024 Rental Kamera. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <!-- Products Page -->
+    <div id="products" class="page">
+      <div class="container">
+          <h2>Katalog Kamera</h2>
+          <div class="products-grid">
+              <div class="card">
+                  <img src="Gambar/eos-5d-mark-iv.jpg" alt="Canon EOS 5D">
+                  <div class="card-body">
+                      <h3>Canon EOS 5D Mark IV</h3>
+                      <ul class="specs-list">
+                          <li>30.4 MP Full-Frame CMOS Sensor</li>
+                          <li>4K Video Recording</li>
+                          <li>61-Point AF System</li>
+                          <li>ISO Range: 100-32000</li>
+                      </ul>
+                      <p class="card-price">Rp 500.000/hari</p>
+                      <button class="btn" onclick="openModal('Canon EOS 5D Mark IV', 500000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/sony_a7_mkiii.jpg" alt="Sony A7 III">
+                  <div class="card-body">
+                      <h3>Sony A7 III</h3>
+                      <ul class="specs-list">
+                          <li>24.2 MP Full-Frame Sensor</li>
+                          <li>5-Axis Image Stabilization</li>
+                          <li>693 Phase-Detection AF Points</li>
+                          <li>4K HDR Video</li>
+                      </ul>
+                      <p class="card-price">Rp 600.000/hari</p>
+                      <button class="btn" onclick="openModal('Sony A7 III', 600000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/nikon_d850.jpg" alt="Nikon D850">
+                  <div class="card-body">
+                      <h3>Nikon D850</h3>
+                      <ul class="specs-list">
+                          <li>45.7 MP Full-Frame CMOS Sensor</li>
+                          <li>4K UHD Video Recording</li>
+                          <li>153-Point AF System</li>
+                          <li>ISO Range: 64-25600</li>
+                      </ul>
+                      <p class="card-price">Rp 700.000/hari</p>
+                      <button class="btn" onclick="openModal('Nikon D850', 700000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/fujifilm_X-T4.jpg" alt="Fujifilm X-T4">
+                  <div class="card-body">
+                      <h3>Fujifilm X-T4</h3>
+                      <ul class="specs-list">
+                          <li>26.1 MP APS-C CMOS Sensor</li>
+                          <li>4K DCI/UHD Video Recording</li>
+                          <li>In-Body Image Stabilization</li>
+                          <li>ISO Range: 160-12800</li>
+                      </ul>
+                      <p class="card-price">Rp 550.000/hari</p>
+                      <button class="btn" onclick="openModal('Fujifilm X-T4', 550000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/Canon_EOS_R5.webp" alt="Canon EOS R5">
+                  <div class="card-body">
+                      <h3>Canon EOS R5</h3>
+                      <ul class="specs-list">
+                          <li>45 MP Full-Frame CMOS Sensor</li>
+                          <li>8K Video Recording</li>
+                          <li>Dual Pixel CMOS AF II</li>
+                          <li>ISO Range: 100-51200</li>
+                      </ul>
+                      <p class="card-price">Rp 800.000/hari</p>
+                      <button class="btn" onclick="openModal('Canon EOS R5', 800000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/Sony_a7r.jpg" alt="Sony A7R IV">
+                  <div class="card-body">
+                      <h3>Sony A7R IV</h3>
+                      <ul class="specs-list">
+                          <li>61 MP Full-Frame CMOS Sensor</li>
+                          <li>4K HDR Video Recording</li>
+                          <li>567-Point AF System</li>
+                          <li>ISO Range: 100-32000</li>
+                      </ul>
+                      <p class="card-price">Rp 900.000/hari</p>
+                      <button class="btn" onclick="openModal('Sony A7R IV', 900000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/nikon_z7.webp" alt="Nikon Z7">
+                  <div class="card-body">
+                      <h3>Nikon Z7</h3>
+                      <ul class="specs-list">
+                          <li>45.7 MP Full-Frame CMOS Sensor</li>
+                          <li>4K UHD Video Recording</li>
+                          <li>493-Point Hybrid AF System</li>
+                          <li>ISO Range: 64-25600</li>
+                      </ul>
+                      <p class="card-price">Rp 750.000/hari</p>
+                      <button class="btn" onclick="openModal('Nikon Z7', 750000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/panasonic_lumix_S1H.webp" alt="Panasonic Lumix S1H">
+                  <div class="card-body">
+                      <h3>Panasonic Lumix S1H</h3>
+                      <ul class="specs-list">
+                          <li>24.2 MP Full-Frame CMOS Sensor</li>
+                          <li>6K Video Recording</li>
+                          <li>225-Point AF System</li>
+                          <li>ISO Range: 100-51200</li>
+                      </ul>
+                      <p class="card-price">Rp 850.000/hari</p>
+                      <button class="btn" onclick="openModal('Panasonic Lumix S1H', 850000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/olympus_om-d_e-m1_mark_iii.webp" alt="Olympus OM-D E-M1 Mark III">
+                  <div class="card-body">
+                      <h3>Olympus OM-D E-M1 Mark III</h3>
+                      <ul class="specs-list">
+                          <li>20.4 MP Micro Four Thirds Sensor</li>
+                          <li>4K DCI/UHD Video Recording</li>
+                          <li>121-Point AF System</li>
+                          <li>ISO Range: 200-25600</li>
+                      </ul>
+                      <p class="card-price">Rp 600.000/hari</p>
+                      <button class="btn" onclick="openModal('Olympus OM-D E-M1 Mark III', 600000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/leica-q2.png" alt="Leica Q2">
+                  <div class="card-body">
+                      <h3>Leica Q2</h3>
+                      <ul class="specs-list">
+                          <li>47.3 MP Full-Frame CMOS Sensor</li>
+                          <li>4K UHD Video Recording</li>
+                          <li>49-Point AF System</li>
+                          <li>ISO Range: 50-50000</li>
+                      </ul>
+                      <p class="card-price">Rp 1.000.000/hari</p>
+                      <button class="btn" onclick="openModal('Leica Q2', 1000000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/canon-eos-90d.webp" alt="Canon EOS 90D">
+                  <div class="card-body">
+                      <h3>Canon EOS 90D</h3>
+                      <ul class="specs-list">
+                          <li>32.5 MP APS-C CMOS Sensor</li>
+                          <li>4K UHD Video Recording</li>
+                          <li>45-Point All Cross-Type AF System</li>
+                          <li>ISO Range: 100-25600</li>
+                      </ul>
+                      <p class="card-price">Rp 450.000/hari</p>
+                      <button class="btn" onclick="openModal('Canon EOS 90D', 450000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+
+              <div class="card">
+                  <img src="Gambar/sony_a6400.webp" alt="Sony A6400">
+                  <div class="card-body">
+                      <h3>Sony A6400</h3>
+                      <ul class="specs-list">
+                          <li>24.2 MP APS-C CMOS Sensor</li>
+                          <li>4K UHD Video Recording</li>
+                          <li>425-Point Phase Detection AF</li>
+                          <li>ISO Range: 100-32000</li>
+                      </ul>
+                      <p class="card-price">Rp 500.000/hari</p>
+                      <button class="btn" onclick="openModal('Sony A6400', 500000)">Sewa Sekarang</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <footer>
+          <p>&copy; 2024 Rental Kamera. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <!-- About & Contact Page -->
+    <div id="contact" class="page">
+      <div class="container">
+        <section id="contact-form">
+            <h2>Hubungi Kami</h2>
+            <form action="process_message.php" method="POST">
+                <input type="text" name="name" placeholder="Nama Anda" required />
+                <input type="email" name="email" placeholder="Email Anda" required />
+                <textarea name="message" placeholder="Pesan Anda" rows="5" required></textarea>
+                <button type="submit" class="btn">Kirim Pesan</button>
+            </form>
+        </section>
+
+          <section class="about-section">
+            <h2>Tentang Kami</h2>
+            <p>Kami adalah penyedia jasa rental kamera profesional dengan pengalaman lebih dari 5 tahun. Sejak didirikan pada tahun 2018, kami telah melayani berbagai kebutuhan fotografi untuk individu, perusahaan, dan acara-acara besar. Kami menyediakan berbagai jenis kamera dan peralatan fotografi dari merek-merek ternama untuk memastikan kualitas hasil yang terbaik.</p>
+            <p>Komitmen kami adalah memberikan pelayanan terbaik dengan peralatan berkualitas tinggi untuk memenuhi kebutuhan fotografi Anda. Kami memahami bahwa setiap momen berharga dan kami berusaha untuk membantu Anda mengabadikan momen tersebut dengan sempurna. Tim kami terdiri dari para ahli yang siap memberikan konsultasi dan bantuan teknis untuk memastikan Anda mendapatkan peralatan yang sesuai dengan kebutuhan Anda.</p>
+            <h3>Tim Kami</h3>
+            <p><strong>Farrel Zacky As Syahid R</strong> - 2200018061</p>
+            <p><strong>Fania Nabella</strong> - 2200018017</p>
+            <p><strong>Gilang Febriano</strong> - 220018013</p>
+        </section>
+      </div>
+      <footer>
+          <p>&copy; 2024 Rental Kamera. All rights reserved.</p>
+      </footer>
+    </div>
+
+    <!-- Orders Page -->
+    <div id="orders" class="page">
+        <div class="container">
+            <h2>Pesanan Saya</h2>
+            <div class="order-list" id="ordersList"></div>
+        </div>
+        <footer>
+            <p>&copy; 2024 Rental Kamera. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Rental -->
+    <div class="modal" id="rentalModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Sewa Kamera</h3>
+            <p>Berapa hari Anda ingin menyewa?</p>
+            <input type="number" id="rentalDays" placeholder="Masukkan jumlah hari" min="1" oninput="calculateTotal()">
+            <p>Total Harga: <span id="totalPrice">Rp 0</span></p>
+            <h4>Isi Biodata Anda:</h4>
+            <input type="text" id="customerName" placeholder="Nama Anda" required>
+            <input type="email" id="customerEmail" placeholder="Email Anda" required>
+            <input type="tel" id="customerPhone" placeholder="Nomor Telepon" required>
+            <label for="rentalDate">Tanggal Mulai Sewa:</label>
+            <input type="date" id="rentalDate" placeholder="Tanggal Mulai Sewa" required>
+            <div id="errorMessage" style="color: red; display: none;"></div>
+            <button class="btn" onclick="confirmRental()">Konfirmasi</button>
+            <button class="btn" style="background-color: #666;" onclick="closeModal()">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        let currentPricePerDay = 0;
+        let currentCamera = "";
+        let orders = [];
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+
+            // Update orders list if showing orders page
+            if (pageId === 'orders') {
+                updateOrdersList();
+            }
+        }
+
+        function openModal(cameraName, pricePerDay) {
+            document.getElementById('modalTitle').innerText = `Sewa ${cameraName}`;
+            currentPricePerDay = pricePerDay;
+            currentCamera = cameraName;
+            document.getElementById('rentalModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('rentalModal').style.display = 'none';
+            document.getElementById('rentalDays').value = '';
+            document.getElementById('totalPrice').innerText = 'Rp 0';
+            document.getElementById('customerName').value = '';
+            document.getElementById('customerEmail').value = '';
+            document.getElementById('customerPhone').value = '';
+            document.getElementById('rentalDate').value = '';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function calculateTotal() {
+            const days = document.getElementById('rentalDays').value;
+            const total = days * currentPricePerDay;
+            document.getElementById('totalPrice').innerText = `Rp ${total.toLocaleString()}`;
+        }
+
+        function confirmRental() {
+            const name = document.getElementById('customerName').value;
+            const email = document.getElementById('customerEmail').value;
+            const phone = document.getElementById('customerPhone').value;
+            const days = document.getElementById('rentalDays').value;
+            const startDate = document.getElementById('rentalDate').value;
+
+            if (!name || !email || !phone || !days || !startDate) {
+                document.getElementById('errorMessage').innerText = 'Harap lengkapi semua data!';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            const emailLocalPart = email.split('@')[0];
+            if (emailLocalPart.length < 5 || emailLocalPart.length > 30 || !email.includes('@')) {
+                document.getElementById('errorMessage').innerText = 'Bagian sebelum "@" pada email harus antara 5 hingga 30 karakter dan mengandung "@".';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            if (phone.length < 10 || phone.length > 15 || (!phone.startsWith('+') && !phone.startsWith('0'))) {
+                document.getElementById('errorMessage').innerText = 'Nomor telepon harus antara 10 hingga 15 karakter dan dimulai dengan kode negara (misalnya +62) atau angka 0.';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
+
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + parseInt(days));
+            const totalPrice = days * currentPricePerDay;
+
+            const order = {
+                name: name,
+                email: email,
+                phone: phone,
+                camera: currentCamera,
+                days: days,
+                startDate: startDate,
+                endDate: endDate.toISOString().split('T')[0],
+                totalPrice: totalPrice,
+                status: 'Pending'
+            };
+
+            // Send data to the server
+            fetch('rental_process.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data); // Tambahkan logging di sini
+                if (data.success) {
+                    alert('Pesanan berhasil dibuat! Silakan cek halaman Pesanan Saya.');
+                    closeModal();
+                    showPage('orders');
+                } else {
+                    console.error('Error:', data.message);
+                    alert('Terjadi kesalahan saat membuat pesanan. Silakan coba lagi.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat membuat pesanan. Silakan coba lagi.');
+            });
+        }
+
+        function updateOrdersList() {
+            fetch('rental_process.php', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                orders = data;
+                const ordersList = document.getElementById('ordersList');
+                ordersList.innerHTML = '';
+
+                if (orders.length === 0) {
+                    ordersList.innerHTML = '<p>Belum ada pesanan</p>';
+                    return;
+                }
+
+                orders.forEach(order => {
+                    const orderCard = document.createElement('div');
+                    orderCard.className = 'order-card';
+                    orderCard.innerHTML = `
+                        <h3>Order #${order.id}</h3>
+                        <span class="order-status">${order.status}</span>
+                        <div class="order-details">
+                            <p><strong>Kamera:</strong> ${order.camera}</p>
+                            <p><strong>Nama Penyewa:</strong> ${order.name}</p>
+                            <p><strong>Email:</strong> ${order.email}</p>
+                            <p><strong>Telepon:</strong> ${order.phone}</p>
+                            <p><strong>Tanggal Mulai:</strong> ${order.startDate}</p>
+                            <p><strong>Tanggal Selesai:</strong> ${order.endDate}</p>
+                            <p><strong>Durasi:</strong> ${order.days} hari</p>
+                            <p><strong>Total Harga:</strong> Rp ${order.totalPrice.toLocaleString()}</p>
+                        </div>
+                        <div class="order-actions">
+                            <button class="btn btn-confirm" onclick="updateOrderStatus(${order.id}, 'Confirmed')">Konfirmasi</button>
+                            <button class="btn btn-complete" onclick="updateOrderStatus(${order.id}, 'Completed')">Selesai</button>
+                            <button class="btn btn-cancel" onclick="updateOrderStatus(${order.id}, 'Cancelled')">Batalkan</button>
+                        </div>
+                    `;
+                    ordersList.appendChild(orderCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengambil data pesanan. Silakan coba lagi.');
+            });
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+
+                // Send updated status to the server
+                fetch(`rental_process.php?id=${orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Status pesanan berhasil diperbarui.');
+                        updateOrdersList();
+                    } else {
+                        console.error('Error:', data.message);
+                        alert('Terjadi kesalahan saat memperbarui status pesanan. Silakan coba lagi.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memperbarui status pesanan. Silakan coba lagi.');
+                });
+            }
+        }
+
+        window.onload = function() {
+            const savedOrders = localStorage.getItem('cameraRentals');
+            if (savedOrders) {
+                orders = JSON.parse(savedOrders);
+            }
+        };
+
+        document.getElementById('logoutLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            // Perform any necessary logout operations here (e.g., clearing session data)
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('signupLink').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'sign_up.html';
+        });
+    </script>
+</body>
+</html>
